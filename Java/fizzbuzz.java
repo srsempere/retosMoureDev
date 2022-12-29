@@ -4,7 +4,6 @@ package Java;
  * fizzBuzz
  */
 public class fizzbuzz {
-
     public static void main(String[] args) {
         for (int i = 0; i <= 100; i++) {
             boolean divTres = i % 3 == 0;
