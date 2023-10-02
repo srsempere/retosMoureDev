@@ -27,44 +27,41 @@
         return isset($_POST[$arg]) ? trim($_POST[$arg]) : '';
     }
 
-    function descrifra(string $msg, array $alfabeto_morse)
+    function descrifra(string $msg, array $natural_a_morse, array &$res)
     {
-        $res = [];
-        $alfabeto_morse_inver = array_flip($alfabeto_morse);
+        if (preg_match('/[.-]/', $msg)) {
+            // El mensaje contiene código morse.
 
-        // Saneado
-        $msg = strtolower($msg);
-        $msg = preg_replace('/[.,;:!?"\'-]/', '', $msg);
-        $msg = preg_replace('/\s+/', ' ', $msg);
 
-        // Coger el mensaje y cortarlo en trozos.
-        $array_msg = explode(' ', $msg);
+        } else {
+            // El mensaje está en código natural.
+            $morse_a_natural = array_flip($natural_a_morse);
 
-        foreach ($array_msg as $key => $value) {
-            var_dump($value);
-            // es la palabra, da igual si en morse o lenguaje natural.
-            $palabra = $value;
+            $array_msg = explode(' ', $msg);
 
-            if (in_array($palabra[0], $alfabeto_morse_inver)) {
-                // Está metiendo lenguaje natural. Usar $alfabeto_morse_inver porque sus valores es la correspondencia.
-                $array_letras_palabra = mb_str_split($palabra);
-
-                foreach ($array_letras_palabra as $key => $caracter) {
-                    var_dump($caracter);
-                    if (in_array($caracter, $alfabeto_morse_inver)) {
-                        $res[] = array_search($caracter, $alfabeto_morse_inver);
+            foreach ($array_msg as $palabra) {
+                // Creo el array en el que insertar cada caracter.
+                $array_palabra = [];
+                $array_palabra_en_morse = [];
+                $array_palabra = mb_str_split($palabra);
+                // Ahora, se selecciona caracter por caracter y se busca su equivalencia en el array $natural_a_morse.
+                foreach ($array_palabra as $caracter) {
+                    if (array_search(mb_strtolower($caracter), $morse_a_natural)) {  // Falta un paréntesis de cierre aquí
+                        // Se van almacenando las equivalencias en morse en $array_palabra_en_morse.
+                        $array_palabra_en_morse[] = array_search(mb_strtolower($caracter), $morse_a_natural);  // También falta un punto y coma al final aquí
+                        // Se hace un implode teniendo en cuenta los espacios, para tener la palabra formada en morse.
                     }
                 }
-                return $res;
-            } elseif (true) {
-                // Está metiendo lenguaje morse. Usar $alfabeto_morse_inver ...
-            } else {
-                return 'No estás introduciendo ni español ni lenguaje morse válido.';
+            }
+
+                // Se unen todos los carácteres morse en una sola palabra OJO LOS ESPACIOS! Entre caracteres 1 espacio.
+                $res[] = implode(' ', $array_palabra_en_morse);
             }
         }
-    }
 
-    $alfabeto_morse = [
+
+    $natural_a_morse = [
+
         'a' => '.-',
         'b' => '-...',
         'c' => '-.-.',
@@ -109,10 +106,11 @@
         '"' => '.-..-.',
         '/' => '-..-.',
     ];
-
+    $res = [];
     $msg = recoge('msg');
     if ($msg !== '') {
-        $res = descrifra($msg, $alfabeto_morse);
+        descrifra($msg, $natural_a_morse, $res);
+        $msg_descifrado = implode('   ', $res);
     }
 
 
@@ -129,10 +127,11 @@
 
     <?php
 
-        if (isset($res)) {
-            // var_dump(implode(' ', $res));
-
-        }
+    if (isset($msg_descifrado)) {
+    ?>
+        <p><?= $msg_descifrado; ?></p>
+    <?php
+    }
 
     ?>
 </body>
