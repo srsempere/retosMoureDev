@@ -31,7 +31,17 @@
     {
         if (preg_match('/[.-]/', $msg)) {
             // El mensaje contiene código morse.
-
+            $array_palabras_morse = explode('/', $msg);
+            foreach ($array_palabras_morse as $palabra_morse) {
+                $array_caracteres_palabra_morse = explode(' ', $palabra_morse);
+                $array_palabra_natural = [];
+                foreach ($array_caracteres_palabra_morse as $caracter_morse) {
+                    if (array_search($caracter_morse, $natural_a_morse)) {
+                        $array_palabra_natural[] = array_search($caracter_morse, $natural_a_morse);
+                    }
+                }
+                $res[] = implode('', $array_palabra_natural);
+            }
 
         } else {
             // El mensaje está en código natural.
@@ -39,7 +49,6 @@
             $array_msg = explode(' ', $msg);
             foreach ($array_msg as $palabra) {
                 // Creo el array en el que insertar cada caracter.
-                $array_palabra = [];
                 $array_palabra_en_morse = [];
                 $array_palabra = mb_str_split($palabra);
                 // Ahora, se selecciona caracter por caracter y se busca su equivalencia en el array $natural_a_morse.
@@ -107,7 +116,7 @@
     $msg = recoge('msg');
     if ($msg !== '') {
         descrifra($msg, $natural_a_morse, $res);
-        $msg_descifrado = implode('   ', $res);
+        $msg_descifrado = implode('/', $res);
     }
 
 
