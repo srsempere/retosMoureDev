@@ -36,9 +36,7 @@
         } else {
             // El mensaje está en código natural.
             $morse_a_natural = array_flip($natural_a_morse);
-
             $array_msg = explode(' ', $msg);
-
             foreach ($array_msg as $palabra) {
                 // Creo el array en el que insertar cada caracter.
                 $array_palabra = [];
@@ -52,12 +50,11 @@
                         // Se hace un implode teniendo en cuenta los espacios, para tener la palabra formada en morse.
                     }
                 }
-            }
-
                 // Se unen todos los carácteres morse en una sola palabra OJO LOS ESPACIOS! Entre caracteres 1 espacio.
                 $res[] = implode(' ', $array_palabra_en_morse);
             }
         }
+    }
 
 
     $natural_a_morse = [
